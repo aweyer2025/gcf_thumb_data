@@ -7,6 +7,7 @@ const sharp = require('sharp');
 const getExif = require('exif-async');
 const parseDMS = require('parse-dms');
 const { read } = require('fs');
+const {FireStore, Firestore} = require('@google-cloud/firestore');
 
 //Entry point fucntion
 exports.generate_thumb_data = async (file, context) =>{
@@ -97,6 +98,28 @@ exports.generate_thumb_data = async (file, context) =>{
         //upload to final bucket
         await finalBucket.upload(tempFilePath);
         console.log(`fullsize image is uploaded to final bucket ${gcsFile.name}`);
+
+        //writing to FS
+        async function writeToFs(){
+            const fireStore = new Firestore({
+                projectId: 'sp24-41200-antweyer-globaljags',
+                databaseId: 'gcf-gen-thumb-data'
+            });
+
+            let picDataObj = {};
+
+            picDataObj.imageName = finalFileName;
+            picDataObj.imageURL = `gs://sp24-41200-antweyer-gj-final/${finalFileName}`
+            picDataObj.lat = latStr
+            picDataObj.lon = lonStr
+            picDataObj.thumbURL = `gs://sp24-41200-antweyer-gj-tumbnails/${thumbName}`
+            //write to firestore
+            console.log(picDataObj.imageName);
+            let collectionRef =  fireStore.collection('photos');
+            let documentRef = collectionRef.add(picDataObj);
+        }
+        writeToFs()
+        
 
         
 
