@@ -109,10 +109,10 @@ exports.generate_thumb_data = async (file, context) =>{
             let picDataObj = {};
 
             picDataObj.imageName = finalFileName;
-            picDataObj.imageURL = `gs://sp24-41200-antweyer-gj-final/${finalFileName}`
+            picDataObj.imageURL = `https://storage.googleapis.com/sp24-41200-antweyer-gj-final/${finalFileName}`
             picDataObj.lat = latStr
             picDataObj.lon = lonStr
-            picDataObj.thumbURL = `gs://sp24-41200-antweyer-gj-tumbnails/${thumbName}`
+            picDataObj.thumbURL = `https://storage.googleapis.com/sp24-41200-antweyer-gj-tumbnails/${thumbName}`
             //write to firestore
             console.log(picDataObj.imageName);
             let collectionRef =  fireStore.collection('photos');
